@@ -1,4 +1,4 @@
-# 2048game
+#2048game
 
 An implementation of the popular iOS/Android game 2048, written in Java. Features include:
 - a menu screen
