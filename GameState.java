@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * This class models the 2048 game board.
  * 
@@ -132,6 +134,8 @@ public class GameState
     public void left()
     {
         boolean check = false;
+        ArrayList<Integer> xlist = new ArrayList<>();
+        ArrayList<Integer> ylist = new ArrayList<>();
         for (int i = 0; i < noOfSquares; i++) {
             if (check == false) {
                 check = forward(board[i]);
@@ -140,20 +144,23 @@ public class GameState
         }
         if (check) {
             score++;
-            outerloop:
             for (int k = noOfSquares - 1; k >= 0 ; k--) {
                 for (int j = noOfSquares - 1; j >= 0; j--) {
                     if (board[k][j].getSquare() == 0){
-                        try {
-                            board[k][j].setSquare(2);
-                        }
-                        catch (Exception E) {}
-                        break outerloop;
+                        xlist.add(k);
+                        ylist.add(j);
                     }
                 }
             }
+            int randIndex = (int) (Math.random() * xlist.size());
+            int valX = xlist.get(randIndex);
+            int valY = ylist.get(randIndex);
+            try {
+				board[valX][valY].setSquare(2);
+			} 
+            catch (Exception e) {}
+            
         }
-        else score--;
     }
 
     // make a Right move

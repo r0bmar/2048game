@@ -17,9 +17,10 @@ public class Play2048 implements KeyListener
     private boolean gameStarted = false;
     private boolean paused = false;
 
-    private int highScore = 0;
-    private int current = 0;
-    private int currentScreen = 0;
+    private int highScore;
+    private int current;
+    private int currentScreen;
+    private int flashingScreen;
     private Color   GRID_COLOR  = Color.BLACK;
     private static Color[] SQUARE_COLORS = new Color[12];
     private Color   BACK_COLOR  = new Color(210,210,210);
@@ -77,19 +78,6 @@ public class Play2048 implements KeyListener
 
     // set up the menu screen for the game
     private void startGame() {
-        sc.drawRectangle(0,0,WINDOW_SIZE, WINDOW_SIZE, GRID_COLOR);
-        sc.drawString("Photosensitive Epilepsy", BORDER_WIDTH, BORDER_WIDTH, BACK_COLOR);
-        sc.drawString("If you have a history of epilepsy or seizures.", BORDER_WIDTH, BORDER_WIDTH+130, BACK_COLOR);
-        sc.drawString("Consult a doctor before use.", BORDER_WIDTH, BORDER_WIDTH+160, BACK_COLOR); 
-        sc.drawString("Certain patterns may trigger seizures with no prior history.", BORDER_WIDTH, BORDER_WIDTH+190, BACK_COLOR);
-        sc.drawString("Before using this product, carefully read the instruction manual.", BORDER_WIDTH, BORDER_WIDTH+220, BACK_COLOR);
-        sc.wait(5000);
-        sc.drawRectangle(0,0,WINDOW_SIZE, WINDOW_SIZE, GRID_COLOR);
-        sc.drawString("This game was made by Neosh Sheikh and Robin Markwitz.", BORDER_WIDTH, BORDER_WIDTH+140, Color.blue);
-        sc.drawString("It is our take on the game 2048.", BORDER_WIDTH, BORDER_WIDTH+170, Color.blue);
-        sc.drawString("It allows a human player to play the game.", BORDER_WIDTH, BORDER_WIDTH+200, Color.blue);
-        sc.drawString("It also includes a semi-intelligent AI that will attempt to solve it.", BORDER_WIDTH, BORDER_WIDTH+230, Color.blue);
-        sc.wait(3000);
         Font a = sc.getFont();
         sc.drawRectangle(BORDER_WIDTH, BORDER_WIDTH, WINDOW_SIZE - BORDER_WIDTH, WINDOW_SIZE - BORDER_WIDTH, BACK_COLOR);
         sc.drawRectangle(0, 0, BORDER_WIDTH, WINDOW_SIZE, GRID_COLOR);
@@ -102,9 +90,8 @@ public class Play2048 implements KeyListener
             sc.drawString("2048", WINDOW_SIZE/2 - 80, WINDOW_SIZE/2 + 10, new Color((int)(i+255*Math.random()) % 255,(int)(i+255*Math.random()) % 255,(int)(i+255*Math.random()) % 255));
             sc.wait(2);
         }
-        /*sc.setFont(new Font("Comic Sans MS", 1, 18));
-        sc.drawString("Press any key to start", WINDOW_SIZE/2 - 90, WINDOW_SIZE/2 + 40, GRID_COLOR);*/
         sc.setFont(a);
+        flashingScreen++;
         menu(0);
     }
 
@@ -260,7 +247,7 @@ public class Play2048 implements KeyListener
     private void drawSquare(int x, int y) {
 
         Font f = sc.getFont();
-        sc.setFont(new Font("Arial", 0, 28));
+        sc.setFont(new Font("Arial", 1, 28));
         if ((gameState.getBoard()[x][y].getSquare() < 1024) && (gameState.getBoard()[x][y].getSquare() != 0)){
             int n = (int) (Math.log(gameState.getBoard()[x][y].getSquare())/(Math.log(2)));
             sc.drawRectangle(SQUARE_SIZE*y + BORDER_WIDTH + 2, SQUARE_SIZE*x + BORDER_WIDTH + 2, SQUARE_SIZE*(y+1) + BORDER_WIDTH - 2, SQUARE_SIZE*(x+1) + BORDER_WIDTH - 2, SQUARE_COLORS[n-1]);
@@ -346,6 +333,9 @@ public class Play2048 implements KeyListener
         }
         else if (gameStarted == false && currentScreen == 0) //MAIN MENU
         {
+        		if(flashingScreen == 0) {
+        			return;
+        		}
             if (key == KeyEvent.VK_UP) {
                 if(current == 0) current = 2;
                 else --current;
@@ -364,6 +354,9 @@ public class Play2048 implements KeyListener
                 currentScreen = 1;
                 current = 0;
                 menuE(0);
+            }
+            if(key == KeyEvent.VK_ENTER && current == 2) {
+            		System.exit(0);
             }
         }
         else if (gameStarted == false && currentScreen == 1) //EXTRA MENU
